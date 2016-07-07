@@ -283,7 +283,7 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
 
  			"MsTxnId" => date("His") . $order->id,
  			"CurrAlphaCode" => get_woocommerce_currency(),
- 			"Amount" => $order->get_total() + ( get_option('woocommerce_prices_include_tax' ) == 'yes' ? $order->get_total_tax() : 0 ),
+ 			"Amount" => $order->get_total() + ( get_option('woocommerce_prices_include_tax' ) == 'yes' ? 0 : $order->get_total_tax() ),
 
  			"LangCode" =>  strtoupper(substr(get_locale(), 0, 2)),
  			"ClientId" => $order->id,
