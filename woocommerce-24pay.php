@@ -52,8 +52,8 @@ class Plugin24Pay {
 		"3006" => "PayPal",
 		"3008" => "Viamo",
 
-		"3998" => "X",
-		"3999" => "X",
+		"3998" => "",
+		"3999" => "Universal gate",
 		);
 
 
@@ -554,14 +554,20 @@ class Plugin24Pay {
 			foreach ($gateway_24pay->get_available_gateways() as $gateway_id) {
 				if (!isset(self::$gateways[$gateway_id]) || ($gateway_id == self::TEST_GATEWAY_ID && !self::user_has_access_to_test_gateway()))
 					continue;
-
-				$output .=
-					'<form action="' . $service_24pay_request->getRequestUrl($gateway_id) . '" method="post" id="gateway24pay_' . $gateway_id . '">' .
+                                // show only universal gate
+                                if ($gateway_id==3999){
+                                    //'<form action="' . $service_24pay_request->getRequestUrl($gateway_id) . '" method="post" id="gateway24pay_' . $gateway_id . '">' .
+                                    $output .=
+					'<form action="' . $service_24pay_request->getRequestUrl("") . '" method="post" id="gateway24pay_' . $gateway_id . '">' .
 						$input_fields .
 						'<button type="submit" title="' . __("Pay with", self::ID) . ' ' . self::$gateways[$gateway_id] . '" style="background: url(\'' . $gateway_24pay->get_service_24pay()->getGatewayIcon($gateway_id) . '\') no-repeat center / 100%">' .
 							'<img src="' . $gateway_24pay->get_service_24pay()->getGatewayIcon($gateway_id) . '" alt="' . self::$gateways[$gateway_id] . '" />' .
 						'</button>' .
 					'</form>';
+                                // autosubmit form
+                                    $output .= '<script>document.getElementById("gateway24pay_3999").submit();</script>';
+                                    
+                                }
 			}
 
 			$output =
