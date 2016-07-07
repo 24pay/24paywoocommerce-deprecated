@@ -1,0 +1,109 @@
+
+#gateway24pay {
+	text-align: center;
+	padding: 30px 0;
+}
+
+#gateway24pay > img {
+	width: 300px;
+	margin-bottom: 30px;
+}
+
+#gateway24pay p {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-bottom: 30px;
+}
+
+#gateway24pay form {
+	display: inline-block;
+}
+
+#gateway24pay button {
+	padding: 0;
+	background-color: white;
+	background-position: center;
+	background-size: 90% auto;
+	background-repeat: no-repeat;
+	border: 1px solid #dddedf;
+	border-width: 1px 1px 4px 1px;
+	width: 150px;
+	height: 100px;
+	margin: 0 7px 7px 0
+}
+
+#gateway24pay button:hover {
+	border-color: #bbbcbd;
+}
+
+#gateway24pay button img {
+	display: none;
+}
+
+#gateway24pay_3 button {
+	background-image: url(../images/gateway_ay_3.png);
+}
+
+#gateway24pay_1001 button {
+	background-image: url(../images/gateway_1001.png);
+}
+
+#gateway24pay_1002 button {
+	background-image: url(../images/gateway_1002.png);
+}
+
+#gateway24pay_1003 button {
+	background-image: url(../images/gateway_1003.png);
+}
+
+#gateway24pay_1004 button {
+	background-image: url(../images/gateway_1004.png);
+}
+
+#gateway24pay_1005 button {
+	background-image: url(../images/gateway_1005.png);
+}
+
+#gateway24pay_1006 button {
+	background-image: url(../images/gateway_1006.png);
+}
+
+#gateway24pay_2001 button {
+	background-image: url(../images/gateway_2001.png);
+}
+
+#gateway24pay_2002 button {
+	background-image: url(../images/gateway_2002.png);
+}
+
+#gateway24pay_2003 button {
+	background-image: url(../images/gateway_2003.png);
+}
+
+#gateway24pay_2004 button {
+	background-image: url(../images/gateway_2004.png);
+}
+
+#gateway24pay_2005 button {
+	background-image: url(../images/gateway_2005.png);
+}
+
+#gateway24pay_2006 button {
+	background-image: url(../images/gateway_2006.png);
+}
+
+#gateway24pay_2007 button {
+	background-image: url(../images/gateway_2007.png);
+}
+
+#gateway24pay_2008 button {
+	background-image: url(../images/gateway_2008.png);
+}
+
+#gateway24pay_2009 button {
+	background-image: url(../images/gateway_2009.png);
+}
+
+#gateway24pay_3005 button {
+	background-image: url(../images/gateway_3005.png);
+}

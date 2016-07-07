@@ -1,0 +1,108 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce 24pay Gateway\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_US\n"
+"X-Generator: Poedit 1.6.4\n"
+
+# in file woocommerce-24pay.php on line 98
+msgid "24pay Gateway"
+msgstr "24pay Gateway"
+
+# in file woocommerce-24pay.php on line 344
+msgid "Transaction was successfully completed"
+msgstr "Transaction was successfully completed"
+
+# in file woocommerce-24pay.php on line 350
+msgid "Your payment request was received and it's pending"
+msgstr "Your payment request was received and it's pending"
+
+# in file woocommerce-24pay.php on line 350
+msgid "Continue back to shop"
+msgstr "Continue back to shop"
+
+# in file woocommerce-24pay.php on line 356
+msgid "Transaction didn't succeed"
+msgstr "Transaction didn't succeed"
+
+# in file woocommerce-24pay.php on line 356
+msgid "Try again"
+msgstr "Try again"
+
+# in file woocommerce-24pay.php on line 378
+msgid "Pay with"
+msgstr "Pay with"
+
+# in file woocommerce-24pay.php on line 387
+msgid "Select a desired payment method"
+msgstr "Select a desired payment method"
+
+# in file WC_Gateway_24Pay.class.php on line 8
+msgid "Pay securely with your credit card or bank transfer via 24pay gateway"
+msgstr "Pay securely with your credit card or bank transfer via 24pay gateway"
+
+# in file WC_Gateway_24Pay.class.php on line 29
+msgid "MID"
+msgstr "MID"
+
+# in file WC_Gateway_24Pay.class.php on line 31
+msgid "Your MID identifier"
+msgstr "Your MID identifier"
+
+# in file WC_Gateway_24Pay.class.php on line 35
+msgid "ESHOP ID"
+msgstr "ESHOP ID"
+
+# in file WC_Gateway_24Pay.class.php on line 37
+msgid "Shop identifier"
+msgstr "Shop identifier"
+
+# in file WC_Gateway_24Pay.class.php on line 41
+msgid "KEY"
+msgstr "KEY"
+
+# in file WC_Gateway_24Pay.class.php on line 47
+msgid "24-pay"
+msgstr "24-pay"
+
+# in file WC_Gateway_24Pay.class.php on line 54
+msgid "Pay securely with your card or bank transfer via 24pay gateway."
+msgstr "Pay securely with your card or bank transfer via 24pay gateway."
+
+# in file WC_Gateway_24Pay.class.php on line 104
+msgid "24pay gateway refuses generated SIGN"
+msgstr "24pay gateway refuses generated SIGN"
+
+# in file WC_Gateway_24Pay.class.php on line 112
+msgid "Unable to load available gateys"
+msgstr "Unable to load available gateys"
+
+# in file WC_Gateway_24Pay.class.php on line 126
+msgid "Invalid Mid value"
+msgstr "Invalid Mid value"
+
+# in file WC_Gateway_24Pay.class.php on line 138
+msgid "Invalid Key value"
+msgstr "Invalid Key value"
+
+# in file WC_Gateway_24Pay.class.php on line 150
+msgid "Invalid Eshop ID value"
+msgstr "Invalid Eshop ID value"
+
+# in file WC_Gateway_24Pay.class.php on line 166
+msgid "24-pay Gateway"
+msgstr "24-pay Gateway"
+
+# in file WC_Gateway_24Pay.class.php on line 183
+msgid "Available gateways"
+msgstr "Available gateways"
+
+# in file WC_Gateway_24Pay.class.php on line 194
+msgid "No gateways are available"
+msgstr "No gateways are available"
