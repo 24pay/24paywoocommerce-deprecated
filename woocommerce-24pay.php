@@ -4,7 +4,7 @@
  * Plugin URI: http://www.24-pay.sk/
  * Description: Extends WooCommerce with an 24-pay gateway.
  * Author: 24-pay
- * Version: 1.1.1
+ * Version: 1.1.2
  */
 
 
