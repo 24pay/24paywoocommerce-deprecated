@@ -52,7 +52,7 @@ class Plugin24Pay {
 		"3006" => "PayPal",
 		"3008" => "Viamo",
 
-		"3998" => "",
+		"3998" => "Offline gate",
 		"3999" => "Universal gate",
 		);
 
