@@ -4,7 +4,7 @@
  * Plugin URI: http://www.24-pay.sk/
  * Description: Extends WooCommerce with an 24-pay gateway.
  * Author: 24-pay
- * Version: 1.1.2
+ * Version: 1.1.3
  */
 
 
@@ -255,13 +255,15 @@ class Plugin24Pay {
 		if ($running)
 			return;
 
+		$running = true;
+
 		// notification
 
-		if (get_query_var(self::NOTIFICATION_QUERY_VAR) && !$running) {
-			if ($_POST["params"]) {
+		if (get_query_var(self::NOTIFICATION_QUERY_VAR)) {
+			if ($_REQUEST["params"]) {
 				$gateway_24pay = self::create_wc_gateway_24pay();
-				$params_xml = stripslashes(preg_replace("/\<\?.*?\?\>/", "", $_POST["params"]));
-
+				$params_xml = stripslashes(preg_replace("/\<\?.*?\?\>/", "", $_REQUEST["params"]));
+				
 				if ($gateway_24pay->process_notification($params_xml))
 					echo "OK";
 			}
@@ -271,20 +273,18 @@ class Plugin24Pay {
 
 		// result
 
-		if (get_query_var(self::RESULT_QUERY_VAR) && !$running) {
+		if (get_query_var(self::RESULT_QUERY_VAR)) {
 			$url = self::get_gateway_page_permalink(array(
-				"order_id" => $_GET["MsTxnId"],
-				"price" => $_GET["Amount"],
-				"currency" => $_GET["CurrCode"],
-				"result" => $_GET["Result"]
+				"order_id" => $_REQUEST["MsTxnId"],
+				"price" => $_REQUEST["Amount"],
+				"currency" => $_REQUEST["CurrCode"],
+				"result" => $_REQUEST["Result"]
 			));
 
 			header("Location: " . $url);
 
 			exit;
 		}
-
-		$running = true;
 	}
 
 
