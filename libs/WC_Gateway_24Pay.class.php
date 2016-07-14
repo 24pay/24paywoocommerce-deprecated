@@ -358,24 +358,23 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
 					$notification->getCurrAlphaCode() == get_woocommerce_currency();
 
 				if ($transaction_as_expected) {
-
 					switch ($notification->getResult()) {
 
 						case Service24PayNotification::RESULT_PENDING:
-                                                        $order->add_order_note("Recieved notification from 24-pay with result PENDING");
-							$order->update_status("wc-on-hold");
+							$order->add_order_note("Recieved notification from 24-pay with result PENDING");
+							$order->update_status("wc-pending");
 							break;
 
 						case Service24PayNotification::RESULT_OK:
-                                                        $order->add_order_note("Recieved notification from 24-pay with result OK");
+							$order->add_order_note("Recieved notification from 24-pay with result OK");
 							$order->reduce_order_stock();
-                                                        $order->update_status("wc-completed");
+							$order->update_status("wc-completed");
 							$order->payment_complete();
 
 							break;
 
 						case Service24PayNotification::RESULT_FAIL:
-                                                        $order->add_order_note("Recieved notification from 24-pay with result FAIL");
+							$order->add_order_note("Recieved notification from 24-pay with result FAIL");
 							$order->update_status("wc-failed");
 
 							break;
