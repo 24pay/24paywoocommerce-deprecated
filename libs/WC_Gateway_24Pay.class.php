@@ -362,18 +362,21 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
 					switch ($notification->getResult()) {
 
 						case Service24PayNotification::RESULT_PENDING:
-							$order->update_status("pending");
-
+                                                        $order->add_order_note("Recieved notification from 24-pay with result PENDING");
+							$order->update_status("wc-on-hold");
 							break;
 
 						case Service24PayNotification::RESULT_OK:
+                                                        $order->add_order_note("Recieved notification from 24-pay with result OK");
 							$order->reduce_order_stock();
+                                                        $order->update_status("wc-completed");
 							$order->payment_complete();
 
 							break;
 
 						case Service24PayNotification::RESULT_FAIL:
-							$order->update_status("failed");
+                                                        $order->add_order_note("Recieved notification from 24-pay with result FAIL");
+							$order->update_status("wc-failed");
 
 							break;
 					}

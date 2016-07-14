@@ -235,7 +235,7 @@ class Service24PayRequest {
                     break;
 
                 case "Street":
-                    if (! $value || strlen($value) < 5 || strlen($value) > 50) {
+                    if (! $value || strlen($value) < 3 || strlen($value) > 50) {
                         $this->errors[] = $key;
                     }
 

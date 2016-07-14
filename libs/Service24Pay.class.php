@@ -38,7 +38,7 @@ class Service24Pay {
 
 		$this->Key = $Key;
 
-		if (! preg_match("/[a-zA-Z0-9]{1,10}/", $Key))
+		if (! preg_match("/[a-zA-Z0-9]{1,10}/", $EshopId))
 			throw new Service24PayException("Ivalid EshopId value");
 
 		$this->EshopId = $EshopId;
