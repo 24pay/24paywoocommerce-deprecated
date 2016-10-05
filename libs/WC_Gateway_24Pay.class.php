@@ -354,7 +354,7 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
 			if ($order && $order->needs_payment()) {
 
 				$transaction_as_expected =
-					$notification->getAmount() == number_format($order->get_total() + ( get_option('woocommerce_prices_include_tax' ) == 'yes' ? $order->get_total_tax() : 0 ), 2, ".", "") &&
+					$notification->getAmount() == number_format($order->get_total() + ( get_option('woocommerce_prices_include_tax' ) == 'yes' ?  0 : $order->get_total_tax()), 2, ".", "") &&
 					$notification->getCurrAlphaCode() == get_woocommerce_currency();
 
 				if ($transaction_as_expected) {
@@ -394,7 +394,7 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
                                     echo "<h3>TXN NOT AS EXPECTED</h3>";
                                     echo "NOTIFICATION AMOUNT: ".$notification->getAmount()."<br/>";
                                     echo "NOTIFICATION CURR: ".$notification->getCurrAlphaCode()."<br/>";
-                                    echo "WOO AMOUNT: ".number_format($order->get_total() + ( get_option('woocommerce_prices_include_tax' ) == 'yes' ? $order->get_total_tax() : 0 ), 2, ".", "");
+                                    echo "WOO AMOUNT: ".number_format($order->get_total() + ( get_option('woocommerce_prices_include_tax' ) == 'yes' ? 0 : $order->get_total_tax() ), 2, ".", "");
                                     echo "WOO CURR: ".get_woocommerce_currency();
                                 }
 			}
