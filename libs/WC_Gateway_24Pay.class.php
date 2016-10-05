@@ -363,6 +363,8 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
 						case Service24PayNotification::RESULT_PENDING:
 							$order->add_order_note("Recieved notification from 24-pay with result PENDING");
 							$order->update_status("wc-pending");
+							$result = true;
+
 							break;
 
 						case Service24PayNotification::RESULT_OK:
@@ -370,19 +372,19 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
 							$order->reduce_order_stock();
 							$order->update_status("wc-completed");
 							$order->payment_complete();
+							$result = true;
 
 							break;
 
 						case Service24PayNotification::RESULT_FAIL:
 							$order->add_order_note("Recieved notification from 24-pay with result FAIL");
 							$order->update_status("wc-failed");
+							$result = true;
 
 							break;
 					}
 				}
 			}
-
-			$result = true;
 		}
 
 		return $result;
