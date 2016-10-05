@@ -385,6 +385,8 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
                                                     
                                                 default:
                                                     $order->add_order_note("Problem with notification");
+                                                    
+                                                    break;
 					}
 				}
                                 else{
