@@ -382,9 +382,23 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
 							$result = true;
 
 							break;
+                                                    
+                                                default:
+                                                    $order->add_order_note("Problem with notification");
 					}
 				}
+                                else{
+                                    $order->add_order_note("Problem with notification TXN not as expedted");
+                                    echo "<h3>TXN NOT AS EXPECTED</h3>";
+                                    echo "NOTIFICATION AMOUNT: ".$notification->getAmount()."<br/>";
+                                    echo "NOTIFICATION CURR: ".$notification->getCurrAlphaCode()."<br/>";
+                                    echo "WOO AMOUNT: ".number_format($order->get_total() + ( get_option('woocommerce_prices_include_tax' ) == 'yes' ? $order->get_total_tax() : 0 ), 2, ".", "");
+                                    echo "WOO CURR: ".get_woocommerce_currency();
+                                }
 			}
+                        else{
+                            echo "WRONG ORDER ".$order_id;
+                        }
 		}
 
 		return $result;
