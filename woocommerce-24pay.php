@@ -18,7 +18,10 @@ class Plugin24Pay {
 
 	const NOTIFICATION_ROUTE = "24pay-notification";
 	const NOTIFICATION_QUERY_VAR = "notification-24pay";
-
+	
+	const CHECK_ROUTE = "24pay-check";
+	const CHECK_QUERY_VAR = "check-24pay";
+	
 	const RESULT_ROUTE = "24pay-result";
 	const RESULT_QUERY_VAR = "result-24pay";
 
@@ -222,7 +225,8 @@ class Plugin24Pay {
 	public static function wp_filter_add_rewrite_rules($rules) {
 		$plugin_rules = array(
 			self::NOTIFICATION_ROUTE => "index.php?" . self::NOTIFICATION_QUERY_VAR . "=1",
-			self::RESULT_ROUTE => "index.php?" . self::RESULT_QUERY_VAR . "=1"
+			self::RESULT_ROUTE => "index.php?" . self::RESULT_QUERY_VAR . "=1",
+			self::CHECK_ROUTE => "index.php?" . self::CHECK_QUERY_VAR . "=1"
 			);
 
 		$rules = $plugin_rules + $rules;
@@ -240,6 +244,7 @@ class Plugin24Pay {
 	public static function wp_filter_add_feed_query_var($query_vars) {
 		$query_vars[] = self::NOTIFICATION_QUERY_VAR;
 		$query_vars[] = self::RESULT_QUERY_VAR;
+		$query_vars[] = self::CHECK_QUERY_VAR;
 
 		return  $query_vars;
 	}
@@ -257,8 +262,34 @@ class Plugin24Pay {
 
 		$running = true;
 
-		// notification
+		// check
+		if (get_query_var(self::CHECK_QUERY_VAR)) {
+			if ($_GET["order"]) {
+				echo "<h2>CHECK ORDER</h2>";
+				$order_id = $_GET["order"];
+				$order = new WC_Order($order_id);
+				echo "<b>OBJEDNAVKA: ".$order_id ."</b><br/><pre>";
+				@print_r($order);
+				echo "</pre>";
+				echo "<hr/>";
+				/*$notes2 = $order->get_customer_order_notes();*/
+				
+				
+				global $wpdb;
+				$sql = "SELECT * FROM ".$wpdb->prefix."comments WHERE comment_author='WooCommerce' and comment_post_ID=".$order_id;
+				$notes2 = $wpdb->get_results( $sql, OBJECT );
+				
+				//$notes = WC_API_Orders::get_order_notes( $order_id );
+				echo "<h2>NOTES</h2>";
+				echo "<pre>";
+				@print_r($notes2);
+				echo "</pre>";
+			}
 
+			exit;
+		}
+		
+		// notification
 		if (get_query_var(self::NOTIFICATION_QUERY_VAR)) {
 			if ($_REQUEST["params"]) {
 				$gateway_24pay = self::create_wc_gateway_24pay();
