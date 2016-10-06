@@ -26,6 +26,8 @@ class Plugin24Pay {
 	const RESULT_QUERY_VAR = "result-24pay";
 
 	const TEST_GATEWAY_ID = "3005";
+        
+        const ALLOW_24PAY = false;
 
 	/**
 	 * map of known payement gateways
@@ -262,32 +264,34 @@ class Plugin24Pay {
 
 		$running = true;
 
-		// check
-		if (get_query_var(self::CHECK_QUERY_VAR)) {
-			if ($_GET["order"]) {
-				echo "<h2>CHECK ORDER</h2>";
-				$order_id = $_GET["order"];
-				$order = new WC_Order($order_id);
-				echo "<b>OBJEDNAVKA: ".$order_id ."</b><br/><pre>";
-				@print_r($order);
-				echo "</pre>";
-				echo "<hr/>";
-				/*$notes2 = $order->get_customer_order_notes();*/
-				
-				
-				global $wpdb;
-				$sql = "SELECT * FROM ".$wpdb->prefix."comments WHERE comment_author='WooCommerce' and comment_post_ID=".$order_id;
-				$notes2 = $wpdb->get_results( $sql, OBJECT );
-				
-				//$notes = WC_API_Orders::get_order_notes( $order_id );
-				echo "<h2>NOTES</h2>";
-				echo "<pre>";
-				@print_r($notes2);
-				echo "</pre>";
-			}
+                // check
+                if (ALLOW_24PAY){
+                    if (get_query_var(self::CHECK_QUERY_VAR)) {
+                        if ($_GET["order"]) {
+                            echo "<h2>CHECK ORDER</h2>";
+                            $order_id = $_GET["order"];
+                            $order = new WC_Order($order_id);
+                            echo "<b>OBJEDNAVKA: ".$order_id ."</b><br/><pre>";
+                            @print_r($order);
+                            echo "</pre>";
+                            echo "<hr/>";
+                            /*$notes2 = $order->get_customer_order_notes();*/
 
-			exit;
-		}
+
+                            global $wpdb;
+                            $sql = "SELECT * FROM ".$wpdb->prefix."comments WHERE comment_author='WooCommerce' and comment_post_ID=".$order_id;
+                            $notes2 = $wpdb->get_results( $sql, OBJECT );
+
+                            //$notes = WC_API_Orders::get_order_notes( $order_id );
+                            echo "<h2>NOTES</h2>";
+                            echo "<pre>";
+                            @print_r($notes2);
+                            echo "</pre>";
+                        }
+
+                        exit;
+                    }
+                }
 		
 		// notification
 		if (get_query_var(self::NOTIFICATION_QUERY_VAR)) {
