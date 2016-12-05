@@ -292,22 +292,22 @@ class Plugin24Pay {
                             echo "<pre>";
                             @print_r($notes2);
                             echo "</pre>";
-                        }
-
-                        exit;
+                            exit;
+                        }                        
                     }
                 }
                 
                 // check
                 if (self::TEST_24PAY){
                     if (get_query_var(self::TEST_QUERY_VAR)) {
-                            echo "<h2>24-PAY TEST</h2>";
-                            echo "<h3>PARAMS</h3>";
-                            echo "<pre>";
-                            @print_r($_GET);
-                            echo "</pre>";
+                        echo "<h2>24-PAY TEST</h2>";
+                        echo "<h3>PARAMS</h3>";
+                        echo "<pre>";
+                        @print_r($_GET);
+                        echo "</pre>";
+                        exit;
                     }
-                    exit;
+                    
                 }
 		
 		// notification
