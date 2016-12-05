@@ -25,9 +25,13 @@ class Plugin24Pay {
 	const RESULT_ROUTE = "24pay-result";
 	const RESULT_QUERY_VAR = "result-24pay";
 
+        const TEST_ROUTE = "24pay-testing";
+	const TEST_QUERY_VAR = "testing-24pay";
+        
 	const TEST_GATEWAY_ID = "3005";
         
         const ALLOW_24PAY = false;
+        const TEST_24PAY = true;
 
 	/**
 	 * map of known payement gateways
@@ -228,8 +232,9 @@ class Plugin24Pay {
 		$plugin_rules = array(
 			self::NOTIFICATION_ROUTE => "index.php?" . self::NOTIFICATION_QUERY_VAR . "=1",
 			self::RESULT_ROUTE => "index.php?" . self::RESULT_QUERY_VAR . "=1",
-			self::CHECK_ROUTE => "index.php?" . self::CHECK_QUERY_VAR . "=1"
-			);
+                        self::CHECK_ROUTE => "index.php?" . self::CHECK_QUERY_VAR . "=1",
+                        self::TEST_ROUTE => "index.php?" . self::TEST_QUERY_VAR . "=1"
+                );
 
 		$rules = $plugin_rules + $rules;
 
@@ -247,7 +252,7 @@ class Plugin24Pay {
 		$query_vars[] = self::NOTIFICATION_QUERY_VAR;
 		$query_vars[] = self::RESULT_QUERY_VAR;
 		$query_vars[] = self::CHECK_QUERY_VAR;
-
+                $query_vars[] = self::TEST_QUERY_VAR;
 		return  $query_vars;
 	}
 
@@ -291,6 +296,18 @@ class Plugin24Pay {
 
                         exit;
                     }
+                }
+                
+                // check
+                if (TEST_24PAY){
+                    if (get_query_var(self::TEST_QUERY_VAR)) {
+                            echo "<h2>24-PAY TEST</h2>";
+                            echo "<h3>PARAMS</h3>";
+                            echo "<pre>";
+                            @print_r($_GET);
+                            echo "</pre>";
+                    }
+                    exit;
                 }
 		
 		// notification
