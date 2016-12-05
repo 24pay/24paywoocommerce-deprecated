@@ -270,7 +270,7 @@ class Plugin24Pay {
 		$running = true;
 
                 // check
-                if (ALLOW_24PAY){
+                if (self::ALLOW_24PAY){
                     if (get_query_var(self::CHECK_QUERY_VAR)) {
                         if ($_GET["order"]) {
                             echo "<h2>CHECK ORDER</h2>";
@@ -299,7 +299,7 @@ class Plugin24Pay {
                 }
                 
                 // check
-                if (TEST_24PAY){
+                if (self::TEST_24PAY){
                     if (get_query_var(self::TEST_QUERY_VAR)) {
                             echo "<h2>24-PAY TEST</h2>";
                             echo "<h3>PARAMS</h3>";
