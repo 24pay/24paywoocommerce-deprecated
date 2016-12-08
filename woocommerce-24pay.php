@@ -16,22 +16,14 @@ class Plugin24Pay {
 	const GATEWAY_PAGE_SLUG = "24pay-gateway";
 	const GATEWAY_PAGE_SHORTCODE = "24pay-gateways-form";
 
-	const NOTIFICATION_ROUTE = "24pay-notification";
-	const NOTIFICATION_QUERY_VAR = "notification-24pay";
-	
-	const CHECK_ROUTE = "24pay-check";
-	const CHECK_QUERY_VAR = "check-24pay";
-	
-	const RESULT_ROUTE = "24pay-result";
-	const RESULT_QUERY_VAR = "result-24pay";
+	const API_PREFIX = 'wp-json';
+	const API_NAMESPACE = '24pay';
+	const API_ROUTE_NOTIFICATION = 'notification';
+	const API_ROUTE_RESULT = 'transaction-result';
 
-        const TEST_ROUTE = "24pay-testing";
-	const TEST_QUERY_VAR = "testing-24pay";
-        
 	const TEST_GATEWAY_ID = "3005";
-        
-        const ALLOW_24PAY = false;
-        const TEST_24PAY = true;
+
+	const ALLOW_24PAY = false;
 
 	/**
 	 * map of known payement gateways
@@ -89,10 +81,8 @@ class Plugin24Pay {
 		// adds settings link in modules list
 		add_filter("plugin_action_links_" . self::get_plugin_basename(), array("Plugin24Pay", "wp_filter_add_plugion_action_links"));
 
-		// register plugin routes
-		add_filter("rewrite_rules_array", array("Plugin24Pay", "wp_filter_add_rewrite_rules"));
-		add_filter("query_vars", array("Plugin24Pay", "wp_filter_add_feed_query_var"));
-		add_action("parse_query", array("Plugin24Pay", "wp_action_check_for_feed_query_var"));
+		// register response route handlers
+        add_action("rest_api_init", array("Plugin24Pay", "wp_register_rest_routes"));
 
 		// register content parsing hook for gateways page
 		add_shortcode(self::GATEWAY_PAGE_SHORTCODE, array("Plugin24Pay", "wp_shortcode_gateway_page"));
@@ -100,13 +90,24 @@ class Plugin24Pay {
 
 
 
+	public static function wp_register_rest_routes() {
+		register_rest_route(self::API_NAMESPACE, "/" . self::API_ROUTE_NOTIFICATION, array(
+			"methods" => "GET",
+			"callback" => array("Plugin24Pay", "handle_notification_route")
+		));
+
+		register_rest_route(self::API_NAMESPACE, "/" . self::API_ROUTE_RESULT, array(
+			"methods" => "GET",
+			"callback" => array("Plugin24Pay", "handle_result_route")
+		));
+	}
+
+
 	/**
-	 * the plugin actionvation hook callback, during activatin, plugin will try to create new
+	 * the plugin activation hook callback, during activatin, plugin will try to create new
 	 * or activate existing page for gateway operations
 	 */
 	public static function wp_activate() {
-		flush_rewrite_rules();
-
 		$gateway_page_id = get_option(self::GATEWAY_PAGE_ID_OPTION_KEY);
 
 		if ($gateway_page_id) {
@@ -126,15 +127,15 @@ class Plugin24Pay {
 
 		if (!$gateway_page_id) {
 			$gateway_page_id = wp_insert_post(array(
-				'post_title' 		=> __("24pay Gateway", self::ID),
-				'post_name' 		=> self::GATEWAY_PAGE_SLUG,
-				'post_parent' 		=> 0,
-				'post_status' 		=> "publish",
-				'post_type' 		=> "page",
-				'comment_status' 	=> "closed",
-				'ping_status' 		=> "closed",
-				'post_content' 		=> "[" . self::GATEWAY_PAGE_SHORTCODE . "]",
-				));
+				'post_title' => __("24pay Gateway", self::ID),
+				'post_name' => self::GATEWAY_PAGE_SLUG,
+				'post_parent' => 0,
+				'post_status' => "publish",
+				'post_type' => "page",
+				'comment_status' => "closed",
+				'ping_status' => "closed",
+				'post_content' => "[" . self::GATEWAY_PAGE_SHORTCODE . "]",
+			));
 
 			update_option(self::GATEWAY_PAGE_ID_OPTION_KEY, $gateway_page_id);
 		}
@@ -216,127 +217,39 @@ class Plugin24Pay {
 	 * @return array
 	 */
 	public static function wp_filter_add_plugion_action_links($links) {
-	    $links[] = '<a href="admin.php?page=wc-settings&tab=checkout&section=wc_gateway_24pay">' . __('Settings') . '</a>';
+		$links[] = '<a href="admin.php?page=wc-settings&tab=checkout&section=wc_gateway_24pay">' . __('Settings') . '</a>';
 
-	    return $links;
+		return $links;
 	}
 
 
 
-	/**
-	 * hook callback, adds rewrite rules for plugins routes
-	 * @param  array $rules
-	 * @return array
-	 */
-	public static function wp_filter_add_rewrite_rules($rules) {
-		$plugin_rules = array(
-			self::NOTIFICATION_ROUTE => "index.php?" . self::NOTIFICATION_QUERY_VAR . "=1",
-			self::RESULT_ROUTE => "index.php?" . self::RESULT_QUERY_VAR . "=1",
-                        self::CHECK_ROUTE => "index.php?" . self::CHECK_QUERY_VAR . "=1",
-                        self::TEST_ROUTE => "index.php?" . self::TEST_QUERY_VAR . "=1"
-                );
+	public static function handle_notification_route() {
+		if ($_REQUEST["params"]) {
+			$gateway_24pay = self::create_wc_gateway_24pay();
+			$params_xml = stripslashes(preg_replace("/\<\?.*?\?\>/", "", $_REQUEST["params"]));
 
-		$rules = $plugin_rules + $rules;
-
-		return $rules;
-	}
-
-
-
-	/**
-	 * hook callback, add query vars  which would indicate active route
-	 * @param  array $query_vars
-	 * @return array
-	 */
-	public static function wp_filter_add_feed_query_var($query_vars) {
-		$query_vars[] = self::NOTIFICATION_QUERY_VAR;
-		$query_vars[] = self::RESULT_QUERY_VAR;
-		$query_vars[] = self::CHECK_QUERY_VAR;
-                $query_vars[] = self::TEST_QUERY_VAR;
-		return  $query_vars;
-	}
-
-
-
-	/**
-	 * hook callback, this method checks for presence of known query vars and hadles them
-	 */
-	public static function wp_action_check_for_feed_query_var() {
-		static $running;
-
-		if ($running)
-			return;
-
-		$running = true;
-
-                // check
-                if (self::ALLOW_24PAY){
-                    if (get_query_var(self::CHECK_QUERY_VAR)) {
-                        if ($_GET["order"]) {
-                            echo "<h2>CHECK ORDER</h2>";
-                            $order_id = $_GET["order"];
-                            $order = new WC_Order($order_id);
-                            echo "<b>OBJEDNAVKA: ".$order_id ."</b><br/><pre>";
-                            @print_r($order);
-                            echo "</pre>";
-                            echo "<hr/>";
-                            /*$notes2 = $order->get_customer_order_notes();*/
-
-
-                            global $wpdb;
-                            $sql = "SELECT * FROM ".$wpdb->prefix."comments WHERE comment_author='WooCommerce' and comment_post_ID=".$order_id;
-                            $notes2 = $wpdb->get_results( $sql, OBJECT );
-
-                            //$notes = WC_API_Orders::get_order_notes( $order_id );
-                            echo "<h2>NOTES</h2>";
-                            echo "<pre>";
-                            @print_r($notes2);
-                            echo "</pre>";
-                            exit;
-                        }                        
-                    }
-                }
-                
-                // check
-                if (self::TEST_24PAY){
-                    if (get_query_var(self::TEST_QUERY_VAR)) {
-                        echo "<h2>24-PAY TEST</h2>";
-                        echo "<h3>PARAMS</h3>";
-                        echo "<pre>";
-                        @print_r($_GET);
-                        echo "</pre>";
-                        exit;
-                    }
-                    
-                }
-		
-		// notification
-		if (get_query_var(self::NOTIFICATION_QUERY_VAR)) {
-			if ($_REQUEST["params"]) {
-				$gateway_24pay = self::create_wc_gateway_24pay();
-				$params_xml = stripslashes(preg_replace("/\<\?.*?\?\>/", "", $_REQUEST["params"]));
-				
-				if ($gateway_24pay->process_notification($params_xml))
-					echo "OK";
+			if ($gateway_24pay->process_notification($params_xml)) {
+				echo "OK";
 			}
-
-			exit;
 		}
 
-		// result
+		exit;
+	}
 
-		if (get_query_var(self::RESULT_QUERY_VAR)) {
-			$url = self::get_gateway_page_permalink(array(
-				"order_id" => $_REQUEST["MsTxnId"],
-				"price" => $_REQUEST["Amount"],
-				"currency" => $_REQUEST["CurrCode"],
-				"result" => $_REQUEST["Result"]
-			));
 
-			header("Location: " . $url);
 
-			exit;
-		}
+	public static function handle_result_route() {
+		$url = self::get_gateway_page_permalink(array(
+			"order_id" => $_REQUEST["MsTxnId"],
+			"price" => $_REQUEST["Amount"],
+			"currency" => $_REQUEST["CurrCode"],
+			"result" => $_REQUEST["Result"]
+		));
+
+		header("Location: " . $url);
+
+		exit;
 	}
 
 
@@ -449,7 +362,7 @@ class Plugin24Pay {
 	 * @return string
 	 */
 	public static function get_notification_listener_url() {
-		return get_site_url(null, self::NOTIFICATION_ROUTE);
+		return get_site_url(null, self::API_PREFIX . '/' . self::API_NAMESPACE . '/' . self::API_ROUTE_NOTIFICATION);
 	}
 
 
@@ -459,7 +372,7 @@ class Plugin24Pay {
 	 * @return string
 	 */
 	public static function get_result_listener_url() {
-		return get_site_url(null, self::RESULT_ROUTE);
+		return get_site_url(null, self::API_PREFIX . '/' . self::API_NAMESPACE . '/' . self::API_ROUTE_RESULT);
 	}
 
 
@@ -606,20 +519,22 @@ class Plugin24Pay {
 			foreach ($gateway_24pay->get_available_gateways() as $gateway_id) {
 				if (!isset(self::$gateways[$gateway_id]) || ($gateway_id == self::TEST_GATEWAY_ID && !self::user_has_access_to_test_gateway()))
 					continue;
-                                // show only universal gate
-                                if ($gateway_id==3999){
-                                    //'<form action="' . $service_24pay_request->getRequestUrl($gateway_id) . '" method="post" id="gateway24pay_' . $gateway_id . '">' .
-                                    $output .=
-					'<form action="' . $service_24pay_request->getRequestUrl("") . '" method="post" id="gateway24pay_' . $gateway_id . '">' .
+
+				// show only universal gate
+				if ($gateway_id == 3999) {
+					//'<form action="' . $service_24pay_request->getRequestUrl($gateway_id) . '" method="post" id="gateway24pay_' . $gateway_id . '">' .
+					$output .=
+						'<form action="' . $service_24pay_request->getRequestUrl("") . '" method="post" id="gateway24pay_' . $gateway_id . '">' .
 						$input_fields .
-						'<button type="submit" title="' . __("Pay with", self::ID) . ' ' . self::$gateways[$gateway_id] . '" style="background: url(\'' . $gateway_24pay->get_service_24pay()->getGatewayIcon($gateway_id) . '\') no-repeat center / 100%">' .
-							'<img src="' . $gateway_24pay->get_service_24pay()->getGatewayIcon($gateway_id) . '" alt="' . self::$gateways[$gateway_id] . '" />' .
+						'<button type="submit" title="' . __("Pay with",
+							self::ID) . ' ' . self::$gateways[$gateway_id] . '" style="background: url(\'' . $gateway_24pay->get_service_24pay()->getGatewayIcon($gateway_id) . '\') no-repeat center / 100%">' .
+						'<img src="' . $gateway_24pay->get_service_24pay()->getGatewayIcon($gateway_id) . '" alt="' . self::$gateways[$gateway_id] . '" />' .
 						'</button>' .
-					'</form>';
-                                // autosubmit form
-                                    $output .= '<script>document.getElementById("gateway24pay_3999").submit();</script>';
-                                    
-                                }
+						'</form>';
+					// autosubmit form
+					$output .= '<script>document.getElementById("gateway24pay_3999").submit();</script>';
+
+				}
 			}
 
 			$output =
