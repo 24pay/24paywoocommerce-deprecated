@@ -6,11 +6,11 @@
  */
 class Service24Pay {
 
-	protected $isOnStaging = false;
+	protected $isOnStaging = false; // CHANGE ENVIRONMENT (PROD - false | TEST - true)
 
 	protected $serviceProductionDomain = 'https://admin.24-pay.eu';
 
-	protected $serviceStagingDomain = 'https://doxxsl-staging.24-pay.eu';
+	protected $serviceStagingDomain = 'https://test.24-pay.eu';
 
 	protected $mediaBaseDomain = "http://icons.24-pay.sk";
 
