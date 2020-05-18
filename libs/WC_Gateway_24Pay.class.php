@@ -334,7 +334,25 @@ class WC_Gateway_24Pay extends WC_Payment_Gateway {
 	}
 
 
+	/**
+	 * HANDLE REDIRECT AFTER PAYMENT
+	 */
+	public function process_rurl($msTxnId){
+            $order_id = substr($msTxnId, 6);
+            $order = new WC_Order($order_id);
 
+            $order->add_order_note("Client was successfully redirected");
+            $redirectTarget = home_url();
+
+            if($order!= false)
+              {
+                $redirectTarget = $this->get_return_url($order);
+              }
+
+              wp_safe_redirect($redirectTarget);
+            die();
+	}
+	
 	/**
 	 * this function proccess xml notification retrieved from 24pay gateway server and process it
 	 * by checking its validity in first step an then mark the order status respectively of transaction result
