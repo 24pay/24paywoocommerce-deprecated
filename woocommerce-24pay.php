@@ -249,6 +249,8 @@ class Plugin24Pay {
 
 
 	public static function handle_result_route() {
+		
+		/* OLD 
 		$url = self::get_gateway_page_permalink(array(
 			"order_id" => $_REQUEST["MsTxnId"],
 			"price" => $_REQUEST["Amount"],
@@ -259,6 +261,11 @@ class Plugin24Pay {
 		header("Location: " . $url);
 
 		exit;
+		*/
+		
+		$gateway_24pay = self::create_wc_gateway_24pay();		
+		$gateway_24pay->process_rurl($_REQUEST["MsTxnId"]);
+
 	}
 
 
