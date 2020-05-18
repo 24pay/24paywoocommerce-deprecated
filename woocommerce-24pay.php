@@ -92,10 +92,15 @@ class Plugin24Pay {
 
 	public static function wp_register_rest_routes() {
 		register_rest_route(self::API_NAMESPACE, "/" . self::API_ROUTE_NOTIFICATION, array(
-			"methods" => "GET",
+			"methods" => "POST",
 			"callback" => array("Plugin24Pay", "handle_notification_route")
 		));
-
+		
+		register_rest_route(self::API_NAMESPACE, "/" . self::API_ROUTE_NOTIFICATION, array(
+			"methods" => "GET",
+			"callback" => array("Plugin24Pay", "block_notification_route")
+		));
+		
 		register_rest_route(self::API_NAMESPACE, "/" . self::API_ROUTE_RESULT, array(
 			"methods" => "GET",
 			"callback" => array("Plugin24Pay", "handle_result_route")
@@ -223,7 +228,11 @@ class Plugin24Pay {
 	}
 
 
-
+	public static function block_notification_route(){
+		echo "NURL ROUTE LISTENER";
+		exit();
+	}
+	
 	public static function handle_notification_route() {
 		if ($_REQUEST["params"]) {
 			$gateway_24pay = self::create_wc_gateway_24pay();
@@ -233,7 +242,7 @@ class Plugin24Pay {
 				echo "OK";
 			}
 		}
-
+		
 		exit;
 	}
 
@@ -557,4 +566,3 @@ register_uninstall_hook(__FILE__, array("Plugin24Pay", "wp_uninstall"));
 
 
 Plugin24Pay::init();
-
